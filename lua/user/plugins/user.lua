@@ -9,4 +9,5 @@ return {
     cmd = { "Rayso" },
     config = function() require("rayso").setup {} end,
   },
+  { "folke/zen-mode.nvim", cmd = "ZenMode" },
 }
