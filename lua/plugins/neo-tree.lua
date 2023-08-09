@@ -1,5 +1,6 @@
 return {
   "nvim-neo-tree/neo-tree.nvim",
+  branch = "main", -- HACK: force neo-tree to checkout `main` for initial v3 migration since default branch has changed
   dependencies = { "MunifTanjim/nui.nvim" },
   cmd = "Neotree",
   init = function() vim.g.neo_tree_remove_legacy_commands = true end,
@@ -45,7 +46,10 @@ return {
         },
       },
       commands = {
-        system_open = function(state) require("astronvim.utils").system_open(state.tree:get_node():get_id()) end,
+        system_open = function(state)
+          -- TODO: just use vim.ui.open when dropping support for Neovim <0.10
+          (vim.ui.open or require("astronvim.utils").system_open)(state.tree:get_node():get_id())
+        end,
         parent_or_close = function(state)
           local node = state.tree:get_node()
           if (node.type == "directory" or node:has_children()) and node:is_expanded() then
@@ -97,7 +101,7 @@ return {
           vim.api.nvim_echo(messages, false, {})
           local result = results[vim.fn.getcharstr()]
           if result and result.val and result.val ~= "" then
-            vim.notify("Copied: " .. result.val)
+            utils.notify(("Copied: `%s`"):format(result.val))
             vim.fn.setreg("+", result.val)
           end
         end,
@@ -122,8 +126,13 @@ return {
           l = "child_or_open",
           o = "open",
         },
+        fuzzy_finder_mappings = { -- define keymaps for filter popup window in fuzzy_finder_mode
+          ["<C-j>"] = "move_cursor_down",
+          ["<C-k>"] = "move_cursor_up",
+        },
       },
       filesystem = {
+<<<<<<< HEAD
         bind_to_cwd = false,
         follow_current_file = true,
         filtered_items = {
@@ -136,6 +145,11 @@ return {
             "node_modules",
           },
         },
+=======
+        follow_current_file = { enabled = true },
+        hijack_netrw_behavior = "open_current",
+        use_libuv_file_watcher = true,
+>>>>>>> upstream/main
       },
       event_handlers = {
         {

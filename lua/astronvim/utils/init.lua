@@ -132,7 +132,7 @@ end
 
 --- Serve a notification with a title of AstroNvim
 ---@param msg string The notification body
----@param type number|nil The type of the notification (:help vim.log.levels)
+---@param type? number The type of the notification (:help vim.log.levels)
 ---@param opts? table The nvim-notify options to use (:help notify-options)
 function M.notify(msg, type, opts)
   vim.schedule(function() vim.notify(msg, type, M.extend_tbl({ title = "AstroNvim" }, opts)) end)
@@ -140,13 +140,21 @@ end
 
 --- Trigger an AstroNvim user event
 ---@param event string The event name to be appended to Astro
-function M.event(event)
-  vim.schedule(function() vim.api.nvim_exec_autocmds("User", { pattern = "Astro" .. event, modeline = false }) end)
+---@param delay? boolean Whether or not to delay the event asynchronously (Default: true)
+function M.event(event, delay)
+  local emit_event = function() vim.api.nvim_exec_autocmds("User", { pattern = "Astro" .. event, modeline = false }) end
+  if delay == false then
+    emit_event()
+  else
+    vim.schedule(emit_event)
+  end
 end
 
 --- Open a URL under the cursor with the current operating system
 ---@param path string The path of the file to open with the system opener
 function M.system_open(path)
+  -- TODO: REMOVE WHEN DROPPING NEOVIM <0.10
+  if vim.ui.open then return vim.ui.open(path) end
   local cmd
   if vim.fn.has "win32" == 1 and vim.fn.executable "explorer" == 1 then
     cmd = { "cmd.exe", "/K", "explorer" }
@@ -183,7 +191,7 @@ end
 ---@return table # A button entity table for an alpha configuration
 function M.alpha_button(sc, txt)
   -- replace <leader> in shortcut text with LDR for nicer printing
-  local sc_ = sc:gsub("%s", ""):gsub("LDR", "<leader>")
+  local sc_ = sc:gsub("%s", ""):gsub("LDR", "<Leader>")
   -- if the leader is set, replace the text with the actual leader key for nicer printing
   if vim.g.mapleader then sc = sc:gsub("LDR", vim.g.mapleader == " " and "SPC" or vim.g.mapleader) end
   -- return the button entity to display the correct text and send the correct keybinding on press
@@ -198,7 +206,7 @@ function M.alpha_button(sc, txt)
       position = "center",
       text = txt,
       shortcut = sc,
-      cursor = 5,
+      cursor = -2,
       width = 36,
       align_shortcut = "right",
       hl = "DashboardCenter",
@@ -212,7 +220,7 @@ end
 ---@return boolean available # Whether the plugin is available
 function M.is_available(plugin)
   local lazy_config_avail, lazy_config = pcall(require, "lazy.core.config")
-  return lazy_config_avail and lazy_config.plugins[plugin] ~= nil
+  return lazy_config_avail and lazy_config.spec.plugins[plugin] ~= nil
 end
 
 --- Resolve the options table for a given plugin with lazy
@@ -256,6 +264,21 @@ function M.which_key_register()
       M.which_key_queue = nil
     end
   end
+end
+
+--- Get an empty table of mappings with a key for each map mode
+---@return table<string,table> # a table with entries for each map mode
+function M.empty_map_table()
+  local maps = {}
+  for _, mode in ipairs { "", "n", "v", "x", "s", "o", "!", "i", "l", "c", "t" } do
+    maps[mode] = {}
+  end
+  if vim.fn.has "nvim-0.10.0" == 1 then
+    for _, abbr_mode in ipairs { "ia", "ca", "!a" } do
+      maps[abbr_mode] = {}
+    end
+  end
+  return maps
 end
 
 --- Table based API for setting keybindings
