@@ -132,7 +132,6 @@ return {
         },
       },
       filesystem = {
-<<<<<<< HEAD
         bind_to_cwd = false,
         follow_current_file = true,
         filtered_items = {
@@ -145,11 +144,9 @@ return {
             "node_modules",
           },
         },
-=======
         follow_current_file = { enabled = true },
         hijack_netrw_behavior = "open_current",
         use_libuv_file_watcher = true,
->>>>>>> upstream/main
       },
       event_handlers = {
         {

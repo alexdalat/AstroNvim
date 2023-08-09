@@ -7,12 +7,8 @@ return {
   { "NvChad/nvim-colorizer.lua", commit = "dde3084106a70b9a79d48f426f6d6fec6fd203f7", optional = true },
   { "Shatur/neovim-session-manager", commit = "4883372b1ef2bdcf4cbdac44c98d68c216914462", optional = true },
   { "akinsho/toggleterm.nvim", version = "^2", optional = true },
-<<<<<<< HEAD
-  { "b0o/SchemaStore.nvim", commit = "0ba3914a03a4689441170d6b6796500a09b5c189", optional = true },
-  { "echasnovski/mini.ai", commit = "5218ea75e635df78a807bc9d5a7162594fb76d02", optional = true },
-=======
   { "b0o/SchemaStore.nvim", commit = "4136db62991187e2067635b4102f136718739cb9", optional = true },
->>>>>>> upstream/main
+  { "b0o/SchemaStore.nvim", commit = "4136db62991187e2067635b4102f136718739cb9", optional = true },
   { "echasnovski/mini.bufremove", commit = "7821606e35c1ac931b56d8e3155f45ffe76ee7e5", optional = true },
   { "folke/lazy.nvim", version = "^9", optional = true },
   { "folke/neoconf.nvim", version = "^1", optional = true },
