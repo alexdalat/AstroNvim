@@ -132,7 +132,7 @@ return {
         },
       },
       filesystem = {
-        bind_to_cwd = false,
+        bind_to_cwd = true,
         follow_current_file = true,
         filtered_items = {
           visible = true,
@@ -144,7 +144,7 @@ return {
             "node_modules",
           },
         },
-        follow_current_file = { enabled = true },
+        -- follow_current_file = { enabled = true },
         hijack_netrw_behavior = "open_current",
         use_libuv_file_watcher = true,
       },
